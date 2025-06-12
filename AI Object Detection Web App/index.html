@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Object Detection</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+</head>
+
+<body>
+  <div class="container center-align">
+    <h4 id="loadingText">Loading AI Model...</h4>
+    <video id="video" playsinline autoplay muted></video>
+    <canvas id="c1"></canvas>
+
+    <div class="card-panel">
+      <h5>Controls</h5>
+      <div class="switch">
+        <label>
+          AI Off
+          <input type="checkbox" id="ai" disabled>
+          <span class="lever"></span>
+          AI On
+        </label>
+      </div>
+      <p>FPS</p>
+      <p class="range-field">
+        <input type="range" id="fps" min="1" max="60" value="30">
+      </p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

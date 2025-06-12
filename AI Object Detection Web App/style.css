@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+}
+
+#video {
+    display: none; /* Keep hidden for processing only */
+}
+
+#c1 {
+    margin-top: 20px;
+    max-width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+
+.card-panel {
+    margin-top: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
