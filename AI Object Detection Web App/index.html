@@ -12,11 +12,15 @@
 <body>
   <div class="container center-align">
     <h4 id="loadingText">Loading AI Model...</h4>
-    <video id="video" playsinline autoplay muted></video>
-    <canvas id="c1"></canvas>
+
+    <div class="video-container">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="c1"></canvas>
+    </div>
 
     <div class="card-panel">
       <h5>Controls</h5>
+
       <div class="switch">
         <label>
           AI Off
@@ -25,10 +29,23 @@
           AI On
         </label>
       </div>
-      <p>FPS</p>
+
+      <p>FPS: <span id="fpsValue">30</span></p>
       <p class="range-field">
         <input type="range" id="fps" min="1" max="60" value="30">
       </p>
+
+      <div class="switch">
+        <label>
+          Hide Confidence
+          <input type="checkbox" id="showConfidence" checked>
+          <span class="lever"></span>
+          Show Confidence
+        </label>
+      </div>
+
+      <button id="capture" class="btn waves-effect waves-light">Capture Snapshot</button>
+      <p>Objects Detected: <span id="objectCount">0</span></p>
     </div>
   </div>
 
