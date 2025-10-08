@@ -2,23 +2,45 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #f2f2f2;
+    background: linear-gradient(to right, #89f7fe, #66a6ff);
+    color: #333;
 }
 
-#video {
-    display: none; /* Keep hidden for processing only */
+h4, h5 {
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.video-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+#video, #c1 {
+    border-radius: 15px;
+    max-width: 100%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
 #c1 {
-    margin-top: 20px;
-    max-width: 100%;
-    border: 2px solid #ccc;
-    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .card-panel {
     margin-top: 30px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     padding: 20px;
+    border-radius: 15px;
+}
+
+.btn {
+    margin-top: 10px;
+}
+
+.range-field input[type=range] {
+    width: 80%;
 }
