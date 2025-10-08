@@ -1,6 +1,3 @@
-document.getElementById("ai").addEventListener("change", toggleAi);
-document.getElementById("fps").addEventListener("input", changeFps);
-
 const video = document.getElementById("video");
 const canvas = document.getElementById("c1");
 const ctx = canvas.getContext('2d');
@@ -9,6 +6,7 @@ let cameraAvailable = false;
 let aiEnabled = false;
 let fps = 1000 / 30;
 let modelIsLoaded = false;
+let showConfidence = true;
 
 const objectDetector = ml5.objectDetector('cocossd', {}, () => {
     modelIsLoaded = true;
@@ -17,39 +15,27 @@ const objectDetector = ml5.objectDetector('cocossd', {}, () => {
     console.log("Model loaded!");
 });
 
-const constraints = {
-    audio: false,
-    video: { facingMode: "environment" }
-};
+const constraints = { audio: false, video: { facingMode: "environment" } };
 
-startCamera();
+navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => {
+        cameraAvailable = true;
+        video.srcObject = stream;
+        video.onloadedmetadata = () => video.play();
+    })
+    .catch(err => {
+        document.getElementById("loadingText").innerText = "Camera access denied or unavailable.";
+        console.error(err);
+    });
 
-function startCamera() {
-    if (!cameraAvailable) {
-        navigator.mediaDevices.getUserMedia(constraints)
-            .then(stream => {
-                cameraAvailable = true;
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                console.error("Camera error:", err);
-                setTimeout(startCamera, 1000);
-            });
-    }
-}
-
-function timerCallback() {
-    if (isReady()) {
-        updateCanvasSize();
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        if (aiEnabled) runDetection();
-    }
-    setTimeout(timerCallback, fps);
-}
-
-function isReady() {
-    return modelIsLoaded && cameraAvailable;
-}
+// Event Listeners
+document.getElementById("ai").addEventListener("change", () => aiEnabled = !aiEnabled);
+document.getElementById("fps").addEventListener("input", e => {
+    fps = 1000 / e.target.value;
+    document.getElementById("fpsValue").innerText = e.target.value;
+});
+document.getElementById("showConfidence").addEventListener("change", e => showConfidence = e.target.checked);
+document.getElementById("capture").addEventListener("click", captureSnapshot);
 
 function updateCanvasSize() {
     const scale = 0.9;
@@ -57,48 +43,44 @@ function updateCanvasSize() {
     canvas.height = video.videoHeight * scale;
 }
 
-function toggleAi() {
-    aiEnabled = document.getElementById("ai").checked;
+function captureSnapshot() {
+    const link = document.createElement('a');
+    link.download = `snapshot-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
 }
 
-function changeFps() {
-    fps = 1000 / document.getElementById("fps").value;
+function timerCallback() {
+    if (modelIsLoaded && cameraAvailable) {
+        updateCanvasSize();
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        if (aiEnabled) runDetection();
+    }
+    setTimeout(timerCallback, fps);
 }
 
 function runDetection() {
     objectDetector.detect(canvas, (err, results) => {
-        if (err) {
-            console.error("Detection error:", err);
-            return;
-        }
+        if (err) return console.error(err);
 
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        let count = 0;
         results.forEach(obj => {
-            ctx.strokeStyle = "red";
-            ctx.lineWidth = 2;
+            count++;
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+            ctx.lineWidth = 3;
             ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
 
-            ctx.font = "16px Arial";
-            ctx.fillStyle = "red";
-            ctx.fillText(`${obj.label} (${(obj.confidence * 100).toFixed(1)}%)`, obj.x + 5, obj.y > 20 ? obj.y - 5 : obj.y + 15);
+            if (showConfidence) {
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "red";
+                ctx.fillText(`${obj.label} (${(obj.confidence*100).toFixed(1)}%)`, obj.x + 5, obj.y > 20 ? obj.y - 5 : obj.y + 15);
+            }
         });
+
+        document.getElementById("objectCount").innerText = count;
     });
 }
 
 window.onload = timerCallback;
-function startCamera() {
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => {
-            cameraAvailable = true;
-            video.srcObject = stream;
-            video.onloadedmetadata = () => {
-                video.play();
-                console.log("Camera started");
-            };
-        })
-        .catch(err => {
-            cameraAvailable = false;
-            document.getElementById("loadingText").innerText = "Camera access denied or unavailable.";
-            console.error("Camera error:", err.name, err.message);
-        });
-}
